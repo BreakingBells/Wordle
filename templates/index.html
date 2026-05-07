@@ -44,4 +44,16 @@
         }
 
         .message {
-            color
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Wordle</h1>
+
+{% for attempt in attempts %}
+    <div class="row">
+        {% for letter, color in attempt %}
+            <div class="tile {{ color }}">
