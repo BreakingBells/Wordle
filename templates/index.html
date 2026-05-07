@@ -56,4 +56,29 @@
 {% for attempt in attempts %}
     <div class="row">
         {% for letter, color in attempt %}
-            <div class="tile {{ color }}">
+            <div class="tile {{ color }}">{{ letter.upper() }}</div>
+        {% endfor %}
+    </div>
+{% endfor %}
+
+{% if not won and not lost %}
+<form method="POST">
+    <input name="guess" maxlength="5" autofocus autocomplete="off">
+    <button type="submit">Submit</button>
+</form>
+{% endif %}
+
+{% if message %}
+<p class="message">{{ message }}</p>
+{% endif %}
+
+{% if won %}
+<h2>You won!</h2>
+<a href="/reset">Play again</a>
+{% elif lost %}
+<h2>You lost! The word was {{ answer }}</h2>
+<a href="/reset">Play again</a>
+{% endif %}
+
+</body>
+</html>
