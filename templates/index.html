@@ -1,84 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
     <title>Wordle</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-
-        .tile {
-            display: inline-block;
-            width: 45px;
-            height: 45px;
-            margin: 4px;
-            line-height: 45px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            border-radius: 4px;
-        }
-
-        .green { background: #6aaa64; }
-        .yellow { background: #c9b458; }
-        .gray { background: #787c7e; }
-
-        .row {
-            margin-bottom: 10px;
-        }
-
-        input {
-            font-size: 18px;
-            padding: 6px;
-            width: 120px;
-            text-transform: uppercase;
-        }
-
-        button {
-            padding: 8px 14px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .message {
-            color: red;
-            margin-top: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Wordle</h1>
+<h1>WORDLE</h1>
 
-{% for attempt in attempts %}
-    <div class="row">
-        {% for letter, color in attempt %}
-            <div class="tile {{ color }}">{{ letter.upper() }}</div>
-        {% endfor %}
+<div id="game-container">
+    <div id="board"></div>
+
+    <!-- SIDEBAR KEYBOARD -->
+    <div id="keyboard-container">
+        <div class="keyboard-row">
+            <button class="key">Q</button>
+            <button class="key">W</button>
+            <button class="key">E</button>
+            <button class="key">R</button>
+            <button class="key">T</button>
+            <button class="key">Y</button>
+            <button class="key">U</button>
+            <button class="key">I</button>
+            <button class="key">O</button>
+            <button class="key">P</button>
+        </div>
+        <div class="keyboard-row">
+            <button class="key">A</button>
+            <button class="key">S</button>
+            <button class="key">D</button>
+            <button class="key">F</button>
+            <button class="key">G</button>
+            <button class="key">H</button>
+            <button class="key">J</button>
+            <button class="key">K</button>
+            <button class="key">L</button>
+        </div>
+        <div class="keyboard-row">
+            <button class="key">Z</button>
+            <button class="key">X</button>
+            <button class="key">C</button>
+            <button class="key">V</button>
+            <button class="key">B</button>
+            <button class="key">N</button>
+            <button class="key">M</button>
+        </div>
     </div>
-{% endfor %}
+</div>
 
-{% if not won and not lost %}
-<form method="POST">
-    <input name="guess" maxlength="5" autofocus autocomplete="off">
-    <button type="submit">Submit</button>
-</form>
-{% endif %}
-
-{% if message %}
-<p class="message">{{ message }}</p>
-{% endif %}
-
-{% if won %}
-<h2>You won!</h2>
-<a href="/reset">Play again</a>
-{% elif lost %}
-<h2>You lost! The word was {{ answer }}</h2>
-<a href="/reset">Play again</a>
-{% endif %}
-
+<script src="script.js"></script>
 </body>
 </html>
