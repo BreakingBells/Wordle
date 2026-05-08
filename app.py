@@ -6,7 +6,6 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 def get_game():
-    """Load game from session or create a new one."""
     if "game" not in session:
         game = WordleGame()
         session["game"] = game.__dict__
@@ -39,7 +38,8 @@ def index():
         won=game.is_won(),
         lost=game.is_lost(),
         answer=game.answer.upper(),
-        message=message
+        message=message,
+        letter_status=game.letter_status  # NEW
     )
 
 @app.route("/reset")
