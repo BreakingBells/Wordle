@@ -7,8 +7,11 @@
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
+            display: flex;
+            gap: 40px;
         }
 
+        /* Board */
         .tile {
             display: inline-block;
             width: 45px;
@@ -26,9 +29,30 @@
         .yellow { background: #c9b458; }
         .gray { background: #787c7e; }
 
-        .row {
-            margin-bottom: 10px;
+        .row { margin-bottom: 10px; }
+
+        /* Keyboard */
+        #keyboard {
+            width: 220px;
         }
+
+        .key-row { margin-bottom: 8px; }
+
+        .key {
+            width: 30px;
+            height: 40px;
+            margin: 2px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #d3d6da;
+            color: black;
+        }
+
+        .key.green { background: #6aaa64; color: white; }
+        .key.yellow { background: #c9b458; color: white; }
+        .key.gray { background: #787c7e; color: white; }
 
         input {
             font-size: 18px;
@@ -51,34 +75,54 @@
 </head>
 <body>
 
-<h1>Wordle</h1>
+<div>
+    <h1>Wordle</h1>
 
-{% for attempt in attempts %}
-    <div class="row">
-        {% for letter, color in attempt %}
-            <div class="tile {{ color }}">{{ letter.upper() }}</div>
-        {% endfor %}
-    </div>
-{% endfor %}
+    {% for attempt in attempts %}
+        <div class="row">
+            {% for letter, color in attempt %}
+                <div class="tile {{ color }}">{{ letter.upper() }}</div>
+            {% endfor %}
+        </div>
+    {% endfor %}
 
-{% if not won and not lost %}
-<form method="POST">
-    <input name="guess" maxlength="5" autofocus autocomplete="off">
-    <button type="submit">Submit</button>
-</form>
-{% endif %}
+    {% if not won and not lost %}
+    <form method="POST">
+        <input name="guess" maxlength="5" autofocus autocomplete="off">
+        <button type="submit">Submit</button>
+    </form>
+    {% endif %}
 
-{% if message %}
-<p class="message">{{ message }}</p>
-{% endif %}
+    {% if message %}
+    <p class="message">{{ message }}</p>
+    {% endif %}
 
-{% if won %}
-<h2>You won!</h2>
-<a href="/reset">Play again</a>
-{% elif lost %}
-<h2>You lost! The word was {{ answer }}</h2>
-<a href="/reset">Play again</a>
-{% endif %}
+    {% if won %}
+    <h2>You won!</h2>
+    <a href="/reset">Play again</a>
+    {% elif lost %}
+    <h2>You lost! The word was {{ answer }}</h2>
+    <a href="/reset">Play again</a>
+    {% endif %}
+</div>
+
+<!-- KEYBOARD -->
+<div id="keyboard">
+    {% set rows = [
+        ["Q","W","E","R","T","Y","U","I","O","P"],
+        ["A","S","D","F","G","H","J","K","L"],
+        ["Z","X","C","V","B","N","M"]
+    ] %}
+
+    {% for row in rows %}
+        <div class="key-row">
+            {% for letter in row %}
+                {% set color = letter_status.get(letter, "") %}
+                <button class="key {{ color }}">{{ letter }}</button>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
 
 </body>
 </html>
