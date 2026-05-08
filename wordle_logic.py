@@ -1,8 +1,6 @@
 import random
 
-# --- WORD LIST ---
-WORDS = [
-    "aback","abase","abate","abbey","abbot","abhor","abide","abled","abode","abort",
+WORD_LIST = ["aback","abase","abate","abbey","abbot","abhor","abide","abled","abode","abort",
 "about","above","abuse","abyss","acorn","acrid","actor","acute","adage","adapt",
 "adept","admin","admit","adobe","adopt","adore","adorn","adult","affix","afire",
 "afoot","afoul","after","again","agape","agate","agent","agile","aging","aglow",
@@ -143,53 +141,61 @@ WORDS = [
 "patch","patio","patsy","patty","pause","payee","payer","peace","peach","pearl",
 "pecan","pedal","penal","pence","penne","penny","perch","peril","perky","pesky",
 "pesto","petal","petty","phase","phone","phony","photo","piano","picky","piece",
-"piety","pig"
-]
-
-GREEN = "green"
-YELLOW = "yellow"
-GRAY = "gray"
+"piety","pig"]
 
 class WordleGame:
-    def __init__(self):
-        self.answer = random.choice(WORDS)
-        self.attempts = []
-        self.max_attempts = 6
+    def __init__(self, answer=None, max_attempts=6):
+        self.answer = answer or random.choice(WORD_LIST)
+        self.max_attempts = max_attempts
+        self.attempts = []  # list of [(letter, color), ...]
+        self.letter_status = {}  # NEW: tracks keyboard colors
+        self.won = False
+        self.lost = False
 
     def check_guess(self, guess):
         guess = guess.lower()
-        answer = self.answer
-
-        result = []
-        used = [False] * 5
+        answer_chars = list(self.answer)
+        colors = ["gray"] * 5
 
         # First pass: greens
-        for i, ch in enumerate(guess):
-            if ch == answer[i]:
-                result.append((ch, GREEN))
-                used[i] = True
-            else:
-                result.append((ch, None))
+        for i in range(5):
+            if guess[i] == answer_chars[i]:
+                colors[i] = "green"
+                answer_chars[i] = None
 
         # Second pass: yellows
-        for i, (ch, color) in enumerate(result):
-            if color is not None:
+        for i in range(5):
+            if colors[i] == "green":
                 continue
-            found = False
-            for j, a_ch in enumerate(answer):
-                if not used[j] and ch == a_ch:
-                    used[j] = True
-                    found = True
-                    break
-            result[i] = (ch, YELLOW if found else GRAY)
+            if guess[i] in answer_chars:
+                colors[i] = "yellow"
+                answer_chars[answer_chars.index(guess[i])] = None
 
-        self.attempts.append(result)
-        return result
+        # Save attempt
+        row = [(guess[i], colors[i]) for i in range(5)]
+        self.attempts.append(row)
+
+        # Update keyboard letter colors
+        for letter, color in row:
+            letter = letter.upper()
+            prev = self.letter_status.get(letter)
+
+            # Never downgrade colors
+            if prev == "green":
+                continue
+            if prev == "yellow" and color == "gray":
+                continue
+
+            self.letter_status[letter] = color
+
+        # Win/loss logic
+        if guess == self.answer:
+            self.won = True
+        elif len(self.attempts) >= self.max_attempts:
+            self.lost = True
 
     def is_won(self):
-        if not self.attempts:
-            return False
-        return all(color == GREEN for _, color in self.attempts[-1])
+        return self.won
 
     def is_lost(self):
-        return len(self.attempts) >= self.max_attempts and not self.is_won()
+        return self.lost
