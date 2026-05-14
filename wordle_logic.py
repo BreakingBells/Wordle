@@ -1,5 +1,6 @@
 import random
 
+# Your full word list stays exactly the same
 WORD_LIST = ["aback","abase","abate","abbey","abbot","abhor","abide","abled","abode","abort",
 "about","above","abuse","abyss","acorn","acrid","actor","acute","adage","adapt",
 "adept","admin","admit","adobe","adopt","adore","adorn","adult","affix","afire",
@@ -143,8 +144,9 @@ WORD_LIST = ["aback","abase","abate","abbey","abbot","abhor","abide","abled","ab
 "pesto","petal","petty","phase","phone","phony","photo","piano","picky","piece",
 "piety","pig"]
 
-# NEW: fast lookup for valid guesses
+# Fast lookup for valid guesses
 VALID_WORDS = set(WORD_LIST)
+
 
 class WordleGame:
     def __init__(self, answer=None, max_attempts=6):
@@ -158,9 +160,9 @@ class WordleGame:
     def check_guess(self, guess):
         guess = guess.lower()
 
-        # NEW: reject non‑dictionary words
+        # Reject invalid words
         if guess not in VALID_WORDS:
-            return "invalid"  # your frontend can check for this
+            return "invalid"
 
         answer_chars = list(self.answer)
         colors = ["gray"] * 5
@@ -179,7 +181,33 @@ class WordleGame:
                 colors[i] = "yellow"
                 answer_chars[answer_chars.index(guess[i])] = None
 
-        # Save attempt
-row = [(guess[i], colors[i]) for i in range(5)]
-self.attempts.append(row)
+        # Save attempt (this MUST be inside the function)
+        row = [(guess[i], colors[i]) for i in range(5)]
+        self.attempts.append(row)
 
+        # Update keyboard letter colors
+        for letter, color in row:
+            letter = letter.upper()
+            prev = self.letter_status.get(letter)
+
+            # Never downgrade colors
+            if prev == "green":
+                continue
+            if prev == "yellow" and color == "gray":
+                continue
+
+            self.letter_status[letter] = color
+
+        # Win/loss logic
+        if guess == self.answer:
+            self.won = True
+        elif len(self.attempts) >= self.max_attempts:
+            self.lost = True
+
+        return row
+
+    def is_won(self):
+        return self.won
+
+    def is_lost(self):
+        return self.lost
