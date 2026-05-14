@@ -180,4 +180,6 @@ class WordleGame:
                 answer_chars[answer_chars.index(guess[i])] = None
 
         # Save attempt
-        row = [(guess[i], colors
+row = [(guess[i], colors[i]) for i in range(5)]
+self.attempts.append(row)
+
