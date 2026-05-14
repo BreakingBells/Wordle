@@ -142,7 +142,7 @@ WORD_LIST = ["aback","abase","abate","abbey","abbot","abhor","abide","abled","ab
 "patch","patio","patsy","patty","pause","payee","payer","peace","peach","pearl",
 "pecan","pedal","penal","pence","penne","penny","perch","peril","perky","pesky",
 "pesto","petal","petty","phase","phone","phony","photo","piano","picky","piece",
-"piety","pig"]
+"piety"]
 
 # Fast lookup for valid guesses
 VALID_WORDS = set(WORD_LIST)
