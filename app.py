@@ -27,10 +27,15 @@ def index():
         guess = request.form["guess"].strip().lower()
 
         if len(guess) != 5 or not guess.isalpha():
-            message = "Enter a valid 5-letter word."
-        else:
-            game.check_guess(guess)
-            save_game(game)
+    message = "Enter a valid 5-letter word."
+else:
+    result = game.check_guess(guess)
+
+    if result == "invalid":
+        message = "Not a real word."
+    else:
+        save_game(game)
+
 
     return render_template(
         "index.html",
