@@ -26,16 +26,17 @@ def index():
     if request.method == "POST":
         guess = request.form["guess"].strip().lower()
 
+        # Basic validation
         if len(guess) != 5 or not guess.isalpha():
-    message = "Enter a valid 5-letter word."
-else:
-    result = game.check_guess(guess)
+            message = "Enter a valid 5-letter word."
+        else:
+            result = game.check_guess(guess)
 
-    if result == "invalid":
-        message = "Not a real word."
-    else:
-        save_game(game)
-
+            # Handle invalid dictionary words
+            if result == "invalid":
+                message = "Not a real word."
+            else:
+                save_game(game)
 
     return render_template(
         "index.html",
@@ -44,7 +45,7 @@ else:
         lost=game.is_lost(),
         answer=game.answer.upper(),
         message=message,
-        letter_status=game.letter_status  # NEW
+        letter_status=game.letter_status
     )
 
 @app.route("/reset")
